@@ -1,5 +1,5 @@
-import { StatusBar } from "react-native";
 import { useEffect } from "react";
+import { StatusBar } from "react-native";
 import { NativeBaseProvider } from "native-base";
 import {
   useFonts,
@@ -29,13 +29,20 @@ export default function App() {
   tagUserInfoCreate();
 
   useEffect(() => {
-    const unsubscribe = OneSignal.setNotificationWillShowInForegroundHandler(
-      (notificationReceivedEvent: NotificationReceivedEvent) => {
-        console.log(notificationReceivedEvent);
-      }
-    );
+    const unsubscribe = OneSignal.setNotificationOpenedHandler((response) => {
+      const { actionId } = response.action as any;
 
-    return unsubscribe;
+      switch (actionId) {
+        case "1":
+          return console.log("Ver todas");
+        case "2":
+          return console.log("Ver pedido");
+        default:
+          return console.log("Nenhum botão clicado");
+      }
+    });
+
+    return () => unsubscribe;
   }, []);
 
   return (
